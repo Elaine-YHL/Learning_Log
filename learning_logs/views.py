@@ -9,11 +9,17 @@ def index(request):
     """The home page for Learning Log."""
     return render(request, 'learning_logs/index.html')
 
-@login_required
 def topics(request):
-    """Show all topics."""
-    topics = Topic.objects.filter(owner=request.user).order_by('date_added')
-    context = {'topics':topics}
+    """Show public topics."""
+    public_topics = Topic.objects.filter(public=True)
+
+    """Show private topics."""
+    private_topics = Topic.objects.filter(
+        public=False, owner=request.user).order_by('date_added')
+    context = {
+        'public_topics': public_topics,
+        'private_topics': private_topics,
+    }
     return render(request, 'learning_logs/topics.html', context)
 
 @login_required

@@ -6,16 +6,29 @@
 
 
 {% block content %}
-
+  <h2>Public Topics</h2>
   <ul class="list-group border-bottom pb-2 mb-4">
-    {% for topic in topics %}
+    {% for topic in public_topics %}
+      <li class="list-group-item border-0">
+        <a class="text-decoration-none text-success"
+         href="{% url 'learning_logs:topic' topic.id %}">
+          {{ topic.text }}</a> - by {{ topic.owner.username }}</li>
+    {% empty %}
+      <li class="list-group-item border-0">
+        No public topics have been added yet.</li>
+    {% endfor %}
+  </ul>
+
+  <h2>Your Private Topics</h2>
+  <ul class="list-group border-bottom pb-2 mb-4">
+    {% for topic in private_topics %}
       <li class="list-group-item border-0">
         <a class="text-decoration-none text-success"
          href="{% url 'learning_logs:topic' topic.id %}">
           {{ topic.text }}</a></li>
     {% empty %}
       <li class="list-group-item border-0">
-        No topics have been added yet.</li>
+        No privates topics have been added yet.</li>
     {% endfor %}
   </ul>
 
