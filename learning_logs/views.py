@@ -14,19 +14,22 @@ def topics(request):
     public_topics = Topic.objects.filter(public=True)
 
     """Show private topics."""
-    private_topics = Topic.objects.filter(
-        public=False, owner=request.user).order_by('date_added')
+    if request.user.is_authenticated:
+        private_topics = Topic.objects.filter(
+            public=False, owner=request.user).order_by('date_added')
+    else: 
+        private_topics = Topic.objects.none()
     context = {
         'public_topics': public_topics,
         'private_topics': private_topics,
     }
     return render(request, 'learning_logs/topics.html', context)
 
-@login_required
 def topic(request, topic_id):
     """Show a single topic and all its entries."""
     topic = Topic.objects.get(id=topic_id)
-    check_topic_owner(topic, request.user)
+    if topic.public is False:
+        check_topic_owner(topic, request.user)
     entries = topic.entry_set.order_by('-date_added')
     context = {'topic': topic, 'entries': entries}
     return render(request, 'learning_logs/topic.html', context)
